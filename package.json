@@ -1,0 +1,41 @@
+{
+  "name": "@lenic/loop",
+  "version": "1.0.0",
+  "description": "用于在 JavaScript 中异步、并行执行某些操作。",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "directories": {
+    "example": "example",
+    "lib": "lib"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lenic/loop.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "async",
+    "loop",
+    "concurrent"
+  ],
+  "author": {
+    "name": "Lenic Rayleigh",
+    "email": "lenic@live.cn"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Lenic/loop/issues"
+  },
+  "homepage": "https://github.com/Lenic/loop#readme",
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  }
+}
