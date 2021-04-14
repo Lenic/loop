@@ -1,16 +1,46 @@
-import { ItemGetter, WorkExecutor, Ref } from './type';
+import { Func, IWorker, ListItem, Ref, WorkConfig, WorkerExecutor } from './types';
 
-export class Worker<T> {
-  constructor(private getItem: ItemGetter<T>, private name: string) {}
+export class Worker<R, T> implements IWorker<R, T> {
+  private $action: WorkerExecutor<R, T>;
+  private $localConfig: Record<string, any>;
 
-  exec<R>(previousValue: Ref<R>, executor: WorkExecutor<R, T>): Promise<void> {
-    const item = this.getItem();
+  name: string;
+
+  constructor(public order: number, action: WorkerExecutor<R, T>) {
+    this.$action = action;
+    this.name = `worker-${order}`;
+    this.$localConfig = { name: this.name };
+  }
+
+  exec(getItem: Func<ListItem<T>>, previous: Ref<R>, config: WorkConfig<R>): Promise<void> {
+    const item = getItem();
     if (item.done) return Promise.resolve();
+    if (config.error) return Promise.reject(config);
 
-    return executor(previousValue, item.value, item.index, { name: this.name }).then((v) => {
-      previousValue.value = v;
+    return new Promise((resolve, reject) => {
+      try {
+        this.$action(previous, item.value, item.index, this.$localConfig, config).then(
+          (v) => {
+            previous.value = v;
 
-      return this.exec(previousValue, executor);
+            if (config.error) {
+              reject(config);
+            } else {
+              resolve();
+            }
+          },
+          (e) => {
+            config.error = {
+              exception: e,
+              workerName: this.name,
+              result: previous.value,
+            };
+            reject(config);
+          }
+        );
+      } catch (e) {
+        reject(e);
+      }
     });
   }
 }

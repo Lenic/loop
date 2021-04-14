@@ -1,30 +1,4 @@
-# Loop
-
-用于在 JavaScript 中异步、并行执行某些操作。
-
-## Usage
-
-```html
-<div>
-  <div>
-    <input id="btnWhite" type="button" value="clear" />
-    <input id="btnForEach" type="button" value="forEach" />
-    <input id="btnForEach2" type="button" value="forEach2" />
-    <input id="btnMap" type="button" value="map" />
-    <input id="btnMap2" type="button" value="map2" />
-    <input id="btnReduce" type="button" value="reduce" />
-    <input id="btnReduce2" type="button" value="reduce2" />
-    <input id="btnReduceRight" type="button" value="reduceRight" />
-    <input id="btnReduceRight2" type="button" value="reduceRight2" />
-  </div>
-  <div>
-    <ol id="olList"></ol>
-  </div>
-</div>
-```
-
-```js
-import { Loop } from '@lenic/loop';
+import { Loop } from '../../';
 
 const ol = document.getElementById('olList');
 
@@ -163,4 +137,3 @@ document.getElementById('btnReduceRight2').addEventListener('click', () => {
     (e) => print('failure.reduce2', JSON.stringify(e))
   );
 });
-```
