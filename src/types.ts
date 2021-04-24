@@ -16,12 +16,6 @@ export interface Func<T> {
   (): T;
 }
 
-export interface IWorker<R, T> {
-  name: string;
-  order: number;
-  exec(getItem: Func<ListItem<T>>, previous: Ref<R>, config: WorkConfig<R>): Promise<void>;
-}
-
 export interface WorkConfig<T> extends Record<string, any> {
   error?: {
     result: T;
@@ -35,9 +29,8 @@ export enum WorkerStatus {
   running = 2,
 }
 
-export interface WorkerInfo<R, T> {
-  status: WorkerStatus;
-  instance: IWorker<R, T>;
+export interface WorkExecutorConfig<R, T> extends Record<string, any> {
+  name: string;
 }
 
 export interface WorkerExecutor<R, T> {
@@ -45,9 +38,26 @@ export interface WorkerExecutor<R, T> {
     previousValue: Ref<R>,
     currentValue: T,
     currentIndex: number,
-    localConfig: Record<string, any>,
+    workerConfig: WorkExecutorConfig<R, T>,
     globalConfig: WorkConfig<R>
   ): Promise<R>;
+}
+
+export interface ReduceConfig<R, T> {
+  globalConfig?: WorkConfig<R>;
+  getExecutor?: Func<WorkerExecutor<R, T>>;
+  executors?: Record<string, WorkerExecutor<R, T>>;
+}
+
+export interface IWorker<R, T> {
+  name: string;
+  order: number;
+  exec(getItem: Func<ListItem<T>>, previous: Ref<R>, config: ReduceConfig<R, T>): Promise<void>;
+}
+
+export interface WorkerInfo<R, T> {
+  status: WorkerStatus;
+  instance: IWorker<R, T>;
 }
 
 export interface EachAction<T> {

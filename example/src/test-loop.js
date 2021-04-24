@@ -100,6 +100,18 @@ const reducer = Loop.defaultInstance.reduce(() => (acc, x, index, config) => {
 document.getElementById('btnReduce').addEventListener('click', () => {
   reducer.exec([1, 2, 3, 4], 10).then((v) => print('reduce1', v));
   reducer.exec([10, 20, 30, 40], 100).then((v) => print('reduce2', v));
+  reducer
+    .exec([1, 3, 5, 7, 11, 13], -1, {
+      getExecutor: () => (acc, x, index, config) => {
+        print(`pe = acc: ${acc.value}, x: ${x}, index: ${index}, worker: ${config.name}`);
+        return getPromise(~~(Math.random() * 1000), (r) => {
+          const value = acc.value * x;
+          print(`pr = worker: ${config.name}, value: ${value}, acc: ${acc.value}, x: ${x}, index: ${index}`);
+          r(value);
+        });
+      },
+    })
+    .then((v) => print('reduce3', v));
 });
 
 document.getElementById('btnReduceRight').addEventListener('click', () => {

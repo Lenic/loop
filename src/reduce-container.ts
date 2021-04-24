@@ -2,7 +2,7 @@ import { Worker } from './worker';
 import { WorkerPool } from './worker-pool';
 import { ListContainer } from './list-container';
 
-import { Action, Func, IWorker, ListItem, Ref, WorkConfig, WorkerExecutor } from './types';
+import { Action, Func, IWorker, ListItem, Ref, WorkConfig, WorkerExecutor, ReduceConfig } from './types';
 
 export class ReduceContainer<R, T> {
   private $pool: WorkerPool<R, T>;
@@ -25,7 +25,7 @@ export class ReduceContainer<R, T> {
     getItem: Func<ListItem<T>>,
     done: Func<boolean>,
     previousValue: Ref<R>,
-    config: WorkConfig<R>
+    config: ReduceConfig<R, T>
   ) {
     return worker.exec(getItem, previousValue, config).then(() => {
       if (done()) return Promise.resolve();
@@ -36,12 +36,15 @@ export class ReduceContainer<R, T> {
     });
   }
 
-  private execCore(isNextDirection: boolean, list: T[], memo: R) {
+  private execCore(isNextDirection: boolean, list: T[], memo: R, config: ReduceConfig<R, T>) {
     const jobs: Promise<void>[] = [];
-    const config: WorkConfig<R> = {};
     const res: Ref<R> = { value: memo };
     const sourceList = new ListContainer(list);
     const getItem = isNextDirection ? sourceList.getNext : sourceList.getPrevious;
+
+    if (!config.globalConfig) {
+      config.globalConfig = {};
+    }
 
     let canceler: Action<void | PromiseLike<void>>;
 
@@ -64,11 +67,11 @@ export class ReduceContainer<R, T> {
     return Promise.all(jobs).then(() => res.value);
   }
 
-  exec(list: T[], memo: R) {
-    return this.execCore(true, list, memo);
+  exec(list: T[], memo: R, config: ReduceConfig<R, T> = {}) {
+    return this.execCore(true, list, memo, config);
   }
 
-  execRight(list: T[], memo: R) {
-    return this.execCore(false, list, memo);
+  execRight(list: T[], memo: R, config: ReduceConfig<R, T> = {}) {
+    return this.execCore(false, list, memo, config);
   }
 }
