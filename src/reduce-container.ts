@@ -44,14 +44,14 @@ export class ReduceContainer<R, T> {
       config.globalConfig = {};
     }
 
-    let canceler: Action<void | PromiseLike<void>>;
+    let sign: Action<void | PromiseLike<void>>;
 
     for (let i = 0; i < this.$concurrent; i++) {
       jobs.push(
-        this.$pool.lock(new Promise((r) => (canceler = r))).then((worker) => {
+        this.$pool.lock(new Promise((r) => (sign = r))).then((worker) => {
           const dispose = () => {
+            sign();
             this.$pool.release(worker.name);
-            canceler();
           };
           return this.execIterator(worker, getItem, sourceList.done, res, config).then(dispose, (e) => {
             dispose();

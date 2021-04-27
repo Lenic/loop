@@ -27,7 +27,7 @@ export class WorkerPool<R, T> {
     });
   }
 
-  lock(canelDelay: Promise<void>) {
+  lock(signal: Promise<void>) {
     return new Promise<IWorker<R, T>>((resolve) => {
       let info: WorkerInfo<R, T>;
 
@@ -45,7 +45,7 @@ export class WorkerPool<R, T> {
       if (info) {
         resolve(info.instance);
       } else {
-        canelDelay.then(() => {
+        signal.then(() => {
           const index = this.$waitingInstances.findIndex((x) => x === resolve);
           if (index >= 0) {
             this.$waitingInstances.splice(index, 1);
