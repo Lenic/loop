@@ -25,9 +25,7 @@ export class Worker<R, T> implements IWorker<R, T> {
         config.executors = {
           [this.name]: getExecutor(),
         };
-      }
-
-      if (!config.executors[this.name]) {
+      } else if (!config.executors[this.name]) {
         config.executors[this.name] = getExecutor();
       }
     }
