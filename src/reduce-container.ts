@@ -2,7 +2,7 @@ import { Worker } from './worker';
 import { WorkerPool } from './worker-pool';
 import { ListContainer } from './list-container';
 
-import { Action, Func, IWorker, ListItem, Ref, WorkConfig, WorkerExecutor, ReduceConfig } from './types';
+import { Action, Func, IWorker, ListItem, Ref, WorkerExecutor, ReduceConfig } from './types';
 
 export class ReduceContainer<R, T> {
   private $pool: WorkerPool<R, T>;
@@ -30,9 +30,7 @@ export class ReduceContainer<R, T> {
     return worker.exec(getItem, previousValue, config).then(() => {
       if (done()) return Promise.resolve();
 
-      return worker
-        .exec(getItem, previousValue, config)
-        .then(() => this.execIterator(worker, getItem, done, previousValue, config));
+      return this.execIterator(worker, getItem, done, previousValue, config);
     });
   }
 
