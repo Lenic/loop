@@ -2,11 +2,18 @@ export interface Ref<T> {
   value: T;
 }
 
-export interface ListItem<T> {
-  value?: T;
-  done: boolean;
+export interface ListItemProcessing<T> {
+  value: T;
+  done: false;
   index: number;
 }
+
+export interface ListItemCompleted {
+  done: true;
+  index: number;
+}
+
+export type ListItem<T> = ListItemProcessing<T> | ListItemCompleted;
 
 export interface Action<T> {
   (arg: T): void;

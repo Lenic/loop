@@ -1,4 +1,4 @@
-import { ListItem } from './types';
+import type { ListItem } from './types';
 
 export class ListContainer<T> {
   private $index: number;
@@ -13,15 +13,12 @@ export class ListContainer<T> {
     this.getPrevious = this.getPrevious.bind(this);
   }
 
-  private getValue(value?: T) {
-    const res: ListItem<T> = { done: true, index: this.$index };
-
+  private getValue(value?: T): ListItem<T> {
     if (typeof value !== 'undefined') {
-      res.done = false;
-      res.value = value;
+      return { done: false, value, index: this.$index };
+    } else {
+      return { done: true, index: this.$index };
     }
-
-    return res;
   }
 
   done() {
@@ -53,7 +50,7 @@ export class ListContainer<T> {
   getPrevious(): ListItem<T> {
     if (!this.$list.length) return this.getValue();
 
-    if (this.$index == -2) {
+    if (this.$index === -2) {
       this.$index = this.$list.length - 1;
     }
 

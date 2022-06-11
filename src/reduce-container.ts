@@ -1,8 +1,8 @@
+import type { Action, Func, IWorker, ListItem, Ref, WorkConfig, WorkerExecutor } from './types';
+
 import { Worker } from './worker';
 import { WorkerPool } from './worker-pool';
 import { ListContainer } from './list-container';
-
-import { Action, Func, IWorker, ListItem, Ref, WorkConfig, WorkerExecutor } from './types';
 
 export class ReduceContainer<R, T> {
   private $pool: WorkerPool<R, T>;
@@ -26,7 +26,7 @@ export class ReduceContainer<R, T> {
     done: Func<boolean>,
     previousValue: Ref<R>,
     config: WorkConfig<R>
-  ) {
+  ): Promise<void> {
     return worker.exec(getItem, previousValue, config).then(() => {
       if (done()) return Promise.resolve();
 
@@ -43,9 +43,8 @@ export class ReduceContainer<R, T> {
     const sourceList = new ListContainer(list);
     const getItem = isNextDirection ? sourceList.getNext : sourceList.getPrevious;
 
-    let canceler: Action<void | PromiseLike<void>>;
-
     for (let i = 0; i < this.$concurrent; i++) {
+      let canceler: Action<void | PromiseLike<void>>;
       jobs.push(
         this.$pool.lock(new Promise((r) => (canceler = r))).then((worker) => {
           const dispose = () => {

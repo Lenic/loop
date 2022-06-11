@@ -29,7 +29,7 @@ export class WorkerPool<R, T> {
 
   lock(canelDelay: Promise<void>) {
     return new Promise<IWorker<R, T>>((resolve) => {
-      let info: WorkerInfo<R, T>;
+      let info: WorkerInfo<R, T> | null = null;
 
       for (let i = 0; i < this.names.length; i++) {
         const name = this.names[i];
@@ -61,7 +61,7 @@ export class WorkerPool<R, T> {
     if (!currentInstance) return;
 
     if (this.$waitingInstances.length) {
-      this.$waitingInstances.shift()(currentInstance.instance);
+      this.$waitingInstances.shift()!(currentInstance.instance);
     } else {
       currentInstance.status = WorkerStatus.idle;
     }

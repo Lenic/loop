@@ -1,4 +1,4 @@
-import { Func, IWorker, ListItem, Ref, WorkConfig, WorkerExecutor } from './types';
+import type { Func, IWorker, ListItem, Ref, WorkConfig, WorkerExecutor } from './types';
 
 export class Worker<R, T> implements IWorker<R, T> {
   private $action: WorkerExecutor<R, T>;
@@ -14,7 +14,7 @@ export class Worker<R, T> implements IWorker<R, T> {
 
   exec(getItem: Func<ListItem<T>>, previous: Ref<R>, config: WorkConfig<R>): Promise<void> {
     const item = getItem();
-    if (item.done) return Promise.resolve();
+    if (item.done === true) return Promise.resolve();
     if (config.error) return Promise.reject(config);
 
     return new Promise((resolve, reject) => {

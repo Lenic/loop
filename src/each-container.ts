@@ -1,5 +1,6 @@
+import type { EachAction, WorkerExecutor } from './types';
+
 import { ReduceContainer } from './reduce-container';
-import { EachAction, WorkerExecutor } from './types';
 
 export class EachContainer<T> {
   private $reducer: ReduceContainer<string, T>;

@@ -1,4 +1,5 @@
-import { EachAction, Func, MapAction, WorkerExecutor } from './types';
+import type { EachAction, Func, MapAction, WorkerExecutor } from './types';
+
 import { MapContainer } from './map-container';
 import { EachContainer } from './each-container';
 import { ReduceContainer } from './reduce-container';

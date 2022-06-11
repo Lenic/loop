@@ -1,4 +1,5 @@
-import { MapAction, WorkerExecutor } from './types';
+import type { MapAction, WorkerExecutor } from './types';
+
 import { ReduceContainer } from './reduce-container';
 
 export class MapContainer<R, T> {
